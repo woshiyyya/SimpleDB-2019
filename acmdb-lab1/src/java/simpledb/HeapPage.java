@@ -294,7 +294,7 @@ public class HeapPage implements Page {
      * Returns true if associated slot on this page is filled.
      */
     public boolean isSlotUsed(int i) {
-        //Java 总是把 byte 当做有符处理, 且为big-endian [00000011]
+        //Java 转int 将 byte 当做signed, 且为big-endian [00000011]
         int byte_id = i / 8;
         int offset = i % 8;
         return ((int) (header[byte_id]) & (1 << offset)) > 0;
@@ -313,6 +313,7 @@ public class HeapPage implements Page {
      * (note that this iterator shouldn't return tuples in empty slots!)
      */
     public Iterator<Tuple> iterator() {
+        // TODO：if applicable in multithreading?
         List<Tuple> tupleAr = new ArrayList<Tuple>();
         for (int i = 0; i < tuples.length; i++) {
             // TODO: the 3rd header is not true

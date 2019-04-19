@@ -70,6 +70,10 @@ public class BufferPool {
      */
     public Page getPage(TransactionId tid, PageId pid, Permissions perm)
         throws TransactionAbortedException, DbException {
+
+        if(pid == null){
+            throw new DbException("Invalid page-id!");
+        }
         if(pid2page.containsKey(pid)){
             return pid2page.get(pid);
         }
@@ -91,7 +95,7 @@ public class BufferPool {
      * @param tid the ID of the transaction requesting the unlock
      * @param pid the ID of the page to unlock
      */
-    public  void releasePage(TransactionId tid, PageId pid) {
+    public void releasePage(TransactionId tid, PageId pid) {
         // some code goes here
         // not necessary for lab1|lab2
     }
@@ -160,7 +164,7 @@ public class BufferPool {
      * @param tid the transaction deleting the tuple.
      * @param t the tuple to delete
      */
-    public  void deleteTuple(TransactionId tid, Tuple t)
+    public void deleteTuple(TransactionId tid, Tuple t)
         throws DbException, IOException, TransactionAbortedException {
         // some code goes here
         // not necessary for lab1

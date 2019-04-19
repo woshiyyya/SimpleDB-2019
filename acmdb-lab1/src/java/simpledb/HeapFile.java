@@ -72,8 +72,8 @@ public class HeapFile implements DbFile {
             reader.read(data);
             reader.close();
             return new HeapPage((HeapPageId) pid, data);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("Fail when reading dbfiles");
         }
         return null;
     }
@@ -114,21 +114,28 @@ public class HeapFile implements DbFile {
 
     public class HeapFileIterator implements DbFileIterator {
         private TransactionId tid;
-        private int page_ptr = 0;
+        private int page_id;
+        private BufferPool buffer_pool;
+
+        // 这里一开始以为要用page iterator,但其实我们要遍历的是table上的tuple
+        // page只是tuple存储时的数据结构；而且page.iterator返回的就是Tuple类型的iterator
         private Iterator<Tuple> cur_tuple_iter = null;
 
         public HeapFileIterator(TransactionId tid) {
             this.tid = tid;
+            this.page_id = 0;
+            this.buffer_pool = Database.getBufferPool();
         }
 
         private Iterator<Tuple> GetTupleIterator(HeapPageId pid) throws TransactionAbortedException, DbException {
-            HeapPage page = (HeapPage) Database.getBufferPool().getPage(tid, pid, Permissions.READ_ONLY);
+            // TODO: What's the parameter 'perm' used for??
+            HeapPage page = (HeapPage) buffer_pool.getPage(tid, pid, null);
             return page.iterator();
         }
 
         @Override
         public void open() throws DbException, TransactionAbortedException {
-            this.cur_tuple_iter = GetTupleIterator(new HeapPageId(getId(), page_ptr));
+            this.cur_tuple_iter = GetTupleIterator(new HeapPageId(getId(), page_id));
         }
 
         @Override
@@ -140,11 +147,12 @@ public class HeapFile implements DbFile {
                 return true;
             }
 
-            if (page_ptr + 1 >= numPages()) {
+            if (page_id + 1 >= numPages()) {
                 return false;
             }
-            page_ptr++;
-            cur_tuple_iter = GetTupleIterator(new HeapPageId(getId(), page_ptr));
+            // ptr at the last tuple of current page, but still there are non-empty pages.
+            page_id++;
+            cur_tuple_iter = GetTupleIterator(new HeapPageId(getId(), page_id));
             return cur_tuple_iter.hasNext();
         }
 
@@ -165,7 +173,7 @@ public class HeapFile implements DbFile {
         @Override
         public void close() {
             cur_tuple_iter = null;
-            page_ptr = 0;
+            page_id = 0;
         }
     }
 

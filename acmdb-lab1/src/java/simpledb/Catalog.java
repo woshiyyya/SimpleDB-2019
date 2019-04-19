@@ -25,23 +25,23 @@ public class Catalog {
         String name;
         String pkeyfield;
 
-        public LogItem(DbFile file, String name, String pkeyField) {
+        private LogItem(DbFile file, String name, String pkeyField) {
             this.dbFile = file;
             this.name = name;
             this.pkeyfield = pkeyField;
         }
     }
 
-    private HashMap<Integer, LogItem> id2log;
-    private HashMap<String, Integer> name2id;
+    private ConcurrentHashMap<Integer, LogItem> id2log;
+    private ConcurrentHashMap<String, Integer> name2id;
 
     /**
      * Constructor.
      * Creates a new, empty catalog.
      */
     public Catalog() {
-        id2log = new HashMap<>();
-        name2id = new HashMap<>();
+        id2log = new ConcurrentHashMap<>();
+        name2id = new ConcurrentHashMap<>();
     }
 
     /**
@@ -82,6 +82,9 @@ public class Catalog {
      * @throws NoSuchElementException if the table doesn't exist
      */
     public int getTableId(String name) throws NoSuchElementException {
+        if(name == null){
+            throw new NoSuchElementException("key must not be null");
+        }
         if (name2id.containsKey(name)) {
             return name2id.get(name);
         } else {

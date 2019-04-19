@@ -1,4 +1,5 @@
 package simpledb;
+
 import java.io.*;
 
 public class test {
@@ -6,8 +7,8 @@ public class test {
     public static void main(String[] argv) {
 
         // construct a 3-column table schema
-        Type types[] = new Type[]{ Type.INT_TYPE, Type.INT_TYPE, Type.INT_TYPE };
-        String names[] = new String[]{ "field0", "field1", "field2" };
+        Type types[] = new Type[]{Type.INT_TYPE, Type.INT_TYPE, Type.INT_TYPE};
+        String names[] = new String[]{"field0", "field1", "field2"};
         TupleDesc descriptor = new TupleDesc(types, names);
 
         // create the table, associate it with some_data_file.dat
@@ -30,7 +31,7 @@ public class test {
             f.close();
             Database.getBufferPool().transactionComplete(tid);
         } catch (Exception e) {
-            System.out.println ("Exception : " + e);
+            System.out.println("Exception : " + e);
         }
     }
 
