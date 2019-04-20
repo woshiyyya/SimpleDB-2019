@@ -2,6 +2,8 @@ package simpledb;
 
 import java.io.*;
 
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,8 +28,10 @@ public class BufferPool {
     constructor instead. */
     public static final int DEFAULT_PAGES = 50;
 
-    private int max_pages;
+    private int num_pages;
     private ConcurrentHashMap<PageId, Page> pid2page;
+    private ConcurrentHashMap<PageId, TransactionId> pid2tid;
+    private Queue<PageId> pageIdQueue;
 
     /**
      * Creates a BufferPool that caches up to numPages pages.
@@ -35,8 +39,10 @@ public class BufferPool {
      * @param numPages maximum number of pages in this buffer pool.
      */
     public BufferPool(int numPages) {
-        max_pages = numPages;
+        num_pages = numPages;
         pid2page = new ConcurrentHashMap<>(numPages);
+        pid2tid = new ConcurrentHashMap<>(numPages);
+        pageIdQueue = new ArrayBlockingQueue<>(numPages);
     }
     
     public static int getPageSize() {
@@ -75,17 +81,34 @@ public class BufferPool {
             throw new DbException("Invalid page-id!");
         }
         if(pid2page.containsKey(pid)){
+            // TODO: implement tid.equal
+//            if(!tid.equals(pid2tid.get(pid)))
+//                throw new TransactionAbortedException();
             return pid2page.get(pid);
         }
         else{
             int table_id = pid.getTableId();
             HeapFile heapFile = (HeapFile) Database.getCatalog().getDatabaseFile(table_id);
             HeapPage heapPage = (HeapPage) heapFile.readPage(pid);
-            pid2page.put(pid, heapPage);
+            insertPage(pid, heapPage, tid);
             return heapPage;
         }
     }
 
+
+    private void insertPage(PageId pid, HeapPage page, TransactionId tid){
+        if(pageIdQueue.size() < num_pages){
+            pageIdQueue.add(pid);
+        }
+        else{
+            PageId eject_pid = pageIdQueue.poll();
+            pageIdQueue.add(pid);
+            pid2page.remove(eject_pid);
+            pid2tid.remove(eject_pid);
+        }
+        pid2tid.put(pid, tid);
+        pid2page.put(pid, page);
+    }
     /**
      * Releases the lock on a page.
      * Calling this is very risky, and may result in wrong behavior. Think hard

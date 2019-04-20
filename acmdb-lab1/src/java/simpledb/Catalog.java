@@ -20,19 +20,19 @@ import java.util.HashMap;
 public class Catalog {
 
 
-    private class LogItem {
+    private class Table {
         DbFile dbFile;
         String name;
         String pkeyfield;
 
-        private LogItem(DbFile file, String name, String pkeyField) {
+        private Table(DbFile file, String name, String pkeyField) {
             this.dbFile = file;
             this.name = name;
             this.pkeyfield = pkeyField;
         }
     }
 
-    private ConcurrentHashMap<Integer, LogItem> id2log;
+    private ConcurrentHashMap<Integer, Table> id2table;
     private ConcurrentHashMap<String, Integer> name2id;
 
     /**
@@ -40,7 +40,7 @@ public class Catalog {
      * Creates a new, empty catalog.
      */
     public Catalog() {
-        id2log = new ConcurrentHashMap<>();
+        id2table = new ConcurrentHashMap<>();
         name2id = new ConcurrentHashMap<>();
     }
 
@@ -55,8 +55,8 @@ public class Catalog {
      * @param pkeyField the name of the primary key field
      */
     public void addTable(DbFile file, String name, String pkeyField) {
-        LogItem item = new LogItem(file, name, pkeyField);
-        id2log.put(file.getId(), item);
+        Table item = new Table(file, name, pkeyField);
+        id2table.put(file.getId(), item);
         name2id.put(name, file.getId());
     }
 
@@ -100,8 +100,8 @@ public class Catalog {
      * @throws NoSuchElementException if the table doesn't exist
      */
     public TupleDesc getTupleDesc(int tableid) throws NoSuchElementException {
-        if (id2log.containsKey(tableid)) {
-            return id2log.get(tableid).dbFile.getTupleDesc();
+        if (id2table.containsKey(tableid)) {
+            return id2table.get(tableid).dbFile.getTupleDesc();
         } else {
             throw new NoSuchElementException("Invalid tableid");
         }
@@ -115,28 +115,28 @@ public class Catalog {
      *                function passed to addTable
      */
     public DbFile getDatabaseFile(int tableid) throws NoSuchElementException {
-        if (id2log.containsKey(tableid)) {
-            return id2log.get(tableid).dbFile;
+        if (id2table.containsKey(tableid)) {
+            return id2table.get(tableid).dbFile;
         } else {
             throw new NoSuchElementException("Invalid Tableid");
         }
     }
 
     public String getPrimaryKey(int tableid) {
-        if (id2log.containsKey(tableid)) {
-            return id2log.get(tableid).pkeyfield;
+        if (id2table.containsKey(tableid)) {
+            return id2table.get(tableid).pkeyfield;
         } else {
             throw new NoSuchElementException("Invalid tableid");
         }
     }
 
     public Iterator<Integer> tableIdIterator() {
-        return id2log.keySet().iterator();
+        return id2table.keySet().iterator();
     }
 
     public String getTableName(int id) {
-        if (id2log.containsKey(id)) {
-            return id2log.get(id).name;
+        if (id2table.containsKey(id)) {
+            return id2table.get(id).name;
         } else {
             throw new NoSuchElementException("invalid id");
         }
@@ -146,7 +146,7 @@ public class Catalog {
      * Delete all tables from the catalog
      */
     public void clear() {
-        id2log.clear();
+        id2table.clear();
         name2id.clear();
     }
 
