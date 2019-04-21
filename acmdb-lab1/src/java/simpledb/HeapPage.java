@@ -47,6 +47,8 @@ public class HeapPage implements Page {
         // allocate and read the header slots of this page
         header = new byte[getHeaderSize()];
         for (int i = 0; i < header.length; i++)
+            // TODO: When convert, the jar package presume pagesize=4096,
+            //  which might cause err if we change pagesize by ourseld.
             header[i] = dis.readByte();
         tuples = new Tuple[numSlots];
         try {
@@ -57,7 +59,6 @@ public class HeapPage implements Page {
             e.printStackTrace();
         }
         dis.close();
-
         setBeforeImage();
     }
 
@@ -317,7 +318,6 @@ public class HeapPage implements Page {
         // TODO：if applicable in multithreading?
         List<Tuple> tupleAr = new ArrayList<Tuple>();
         for (int i = 0; i < tuples.length; i++) {
-            // TODO: the 3rd header is not true
             if (isSlotUsed(i)) {
                 tupleAr.add(tuples[i]);
             }

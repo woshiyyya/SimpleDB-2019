@@ -414,7 +414,9 @@ simpledb.HeapPageId
 org.junit.Assert
 simpledb.IntField
 ||:simpledb.BufferPool
+java.io.PrintStream
 simpledb.Page
+java.lang.System
 simpledb.DbException
 java.util.concurrent.ConcurrentHashMap
 simpledb.HeapFile

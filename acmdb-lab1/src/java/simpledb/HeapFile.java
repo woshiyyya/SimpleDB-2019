@@ -67,6 +67,7 @@ public class HeapFile implements DbFile {
         int offset = BufferPool.getPageSize() * pid.pageNumber();
         byte[] data = new byte[BufferPool.getPageSize()];
         try {
+            // TODO: some problem in reading chunks
             RandomAccessFile reader = new RandomAccessFile(file, "r");
             reader.seek(offset);
             reader.read(data);

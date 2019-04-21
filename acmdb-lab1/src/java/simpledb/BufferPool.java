@@ -87,6 +87,7 @@ public class BufferPool {
             return pid2page.get(pid);
         }
         else{
+            System.err.println(pid.pageNumber());
             int table_id = pid.getTableId();
             HeapFile heapFile = (HeapFile) Database.getCatalog().getDatabaseFile(table_id);
             HeapPage heapPage = (HeapPage) heapFile.readPage(pid);

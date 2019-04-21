@@ -42,7 +42,7 @@ public class SimpleDb {
                 if (args.length==5)
                     fieldSeparator=args[4].charAt(0);
             }
-
+            // TODO: here, the pagesize is setted already, so changing pagesize later cause err
             HeapFileEncoder.convert(sourceTxtFile,targetDatFile,
                         BufferPool.getPageSize(),numOfAttributes,ts,fieldSeparator);
 
