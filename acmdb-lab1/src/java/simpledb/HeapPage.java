@@ -294,8 +294,8 @@ public class HeapPage implements Page {
      * Returns true if associated slot on this page is filled.
      */
     public boolean isSlotUsed(int i) {
-        //Java 转int 将 byte 存储 big-endian [00000011]
-        // 如测试第三位是否为1：[11000101] & [00000100] = (int)[00000100] > 0
+        // Java 转int 将 byte 存储 big-endian [00000011]
+        // 若测试第三位是否为1：[11000101] & [00000100] = (int)[00000100] > 0
         int byte_id = i / 8;
         int offset = i % 8;
         return ((int) (header[byte_id]) & (1 << offset)) > 0;
