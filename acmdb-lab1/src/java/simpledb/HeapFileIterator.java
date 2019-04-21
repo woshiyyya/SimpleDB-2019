@@ -29,10 +29,10 @@ public class HeapFileIterator implements DbFileIterator {
         HeapPageId page_id = pid;
 
 //        do{
-////            page = (HeapPage) buffer_pool.getPage(tid, page_id, null);
-////            isEmpty = (page.numSlots == page.getNumEmptySlots());
-////            page_id = new HeapPageId(page_id.getTableId(), page_id.pageNumber() + 1);
-////        }while(isEmpty && page_id.pageNumber() < max_pages);
+//            page = (HeapPage) buffer_pool.getPage(tid, page_id, null);
+//            isEmpty = (page.numSlots == page.getNumEmptySlots());
+//            page_id = new HeapPageId(page_id.getTableId(), page_id.pageNumber() + 1);
+//        }while(isEmpty && page_id.pageNumber() < max_pages);
         HeapPage page = (HeapPage) buffer_pool.getPage(tid, page_id, null);
 
         return page.iterator();
@@ -56,6 +56,7 @@ public class HeapFileIterator implements DbFileIterator {
         if (page_id + 1 >= max_pages) {
             // TODO: Problem!! large data replacement but iterator has no next!
             System.err.println("full page " + page_id + " " + max_pages);
+//            throw new DbException("Page exceed max-page-size");
             return false;
         }
         // ptr at the last tuple of current page, but still there are non-empty pages.
