@@ -24,6 +24,7 @@ public class Tuple implements Serializable {
     private RecordId record_id;
     private TupleDesc tuple_desc = null;
     private ArrayList<Field> field_vals;
+    private boolean on_page = false;
 
     public Tuple(TupleDesc td) {
         tuple_desc = td;
@@ -124,6 +125,7 @@ public class Tuple implements Serializable {
         }
 
         Tuple tp = ((Tuple) o);
+        // TODO：是否需要check record id
 
         if(this.field_vals.size() != tp.field_vals.size()){
             return false;
