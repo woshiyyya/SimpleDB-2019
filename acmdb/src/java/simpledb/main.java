@@ -2,6 +2,7 @@ package simpledb;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,10 +35,16 @@ public class main {
         System.out.println(s[2]);
 
         ArrayBlockingQueue<String> q = new ArrayBlockingQueue<>(5);
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 5; i++) {
             q.add(String.valueOf(i));
             System.out.println("Poll" + q.size());
             System.out.println(q);
         }
+
+        q.remove("2");
+        System.out.println(5/2);
+        HashMap<String, String> m = new HashMap<>();
+        m.put("a", "b");
+        System.out.println(m.remove("a"));
     }
 }

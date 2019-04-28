@@ -110,7 +110,6 @@ public class BTreeChecker {
                 // need to move stuff for next iter:
                 lowerBound = curr.getKey();
             }
-
             SubtreeSummary lastRight = checkSubTree(bt, tid, dirtypages, curr.getRightChild(), lowerBound, upperBound,
                     ipage.getId(), checkOccupancy, depth + 1);
             acc = SubtreeSummary.checkAndMerge(acc, lastRight);

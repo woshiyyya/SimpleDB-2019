@@ -121,8 +121,10 @@ public class BTreeFileDeleteTest extends SimpleDbTestBase {
 		sibling.setLeftSiblingId(pageId);
 		
 		int totalTuples = page.getNumTuples() + sibling.getNumTuples();
-		
+
+		System.err.println("before: page=" + page.getNumTuples() + " sib=" + sibling.getNumTuples());
 		empty.stealFromLeafPage(page, sibling, parent, entry, true);
+		System.err.println("after: page=" + page.getNumTuples() + " sib=" + sibling.getNumTuples());
 		assertEquals(totalTuples, page.getNumTuples() + sibling.getNumTuples());
 		assertTrue(page.getNumTuples() == totalTuples/2 || page.getNumTuples() == totalTuples/2 + 1);
 		assertTrue(sibling.getNumTuples() == totalTuples/2 || sibling.getNumTuples() == totalTuples/2 + 1);

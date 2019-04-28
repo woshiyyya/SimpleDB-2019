@@ -117,7 +117,6 @@ public class SystemTestUtil {
                 Debug.log("\t" + Utility.listToString(t));
             }
         }
-
         iterator.open();
         while (iterator.hasNext()) {
             Tuple t = iterator.next();

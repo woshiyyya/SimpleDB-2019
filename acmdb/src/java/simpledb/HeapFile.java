@@ -83,6 +83,12 @@ public class HeapFile implements DbFile {
     public void writePage(Page page) throws IOException {
         // some code goes here
         // not necessary for lab1
+        int pagesize = BufferPool.getPageSize();
+        int offset = pagesize * page.getId().pageNumber();
+        RandomAccessFile writer = new RandomAccessFile(file, "rw");
+        writer.seek(offset);
+        writer.write(page.getPageData());
+        writer.close();
     }
 
     /**

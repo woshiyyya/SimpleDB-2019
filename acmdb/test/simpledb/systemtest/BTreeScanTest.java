@@ -31,9 +31,15 @@ public class BTreeScanTest extends SimpleDbTestBase {
     private void validateScan(int[] columnSizes, int[] rowSizes)
             throws IOException, DbException, TransactionAbortedException {
     	TransactionId tid = new TransactionId();
+//        for (int columns : columnSizes){
+//            for (int rows : rowSizes) {
+//                System.err.println(columns + " " + rows);
+//            }
+//        }
     	for (int columns : columnSizes) {
     		int keyField = r.nextInt(columns);
             for (int rows : rowSizes) {
+//                System.err.println("pass:" + rows + " " + columns);
                 ArrayList<ArrayList<Integer>> tuples = new ArrayList<ArrayList<Integer>>();
                 BTreeFile f = BTreeUtility.createRandomBTreeFile(columns, rows, null, tuples, keyField);
                 BTreeScan scan = new BTreeScan(tid, f.getId(), "table", null);
