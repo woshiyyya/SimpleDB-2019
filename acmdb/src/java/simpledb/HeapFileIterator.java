@@ -33,7 +33,7 @@ public class HeapFileIterator implements DbFileIterator {
 //            isEmpty = (page.numSlots == page.getNumEmptySlots());
 //            page_id = new HeapPageId(page_id.getTableId(), page_id.pageNumber() + 1);
 //        }while(isEmpty && page_id.pageNumber() < max_pages);
-        HeapPage page = (HeapPage) buffer_pool.getPage(tid, page_id, null);
+        HeapPage page = (HeapPage) buffer_pool.getPage(tid, page_id, Permissions.READ_WRITE);
 
         return page.iterator();
     }

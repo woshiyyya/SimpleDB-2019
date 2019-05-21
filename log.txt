@@ -1,0 +1,11 @@
+
+
+Command	                        Description
+ant	Build                       the default target (for simpledb, this is dist).
+ant -projecthelp	            List all the targets in build.xml with descriptions.
+ant dist	                    Compile the code in src and package it in dist/simpledb.jar.
+ant test	                    Compile and run all the unit tests.
+ant runtest -Dtest=testname	    Run the unit test named testname.
+ant systemtest	                Compile and run all the system tests.
+ant runsystest -Dtest=testname	Compile and run the system test named testname.
+ant handin	                    Generate tarball for submission.

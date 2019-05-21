@@ -247,6 +247,24 @@ public class HeapPage implements Page {
      */
     public void deleteTuple(Tuple t) throws DbException {
         // some code goes here
+        if (t == null)
+            throw new DbException("Tuple is null");
+
+        RecordId recordId = t.getRecordId();
+
+        if (recordId == null)
+            throw new DbException("Tuple record id is null");
+
+        if (pid.equals(recordId.getPageId())) {
+            for (int i = 0; i < tuples.length; i++) {
+                if (isSlotUsed(i) && tuples[i].getRecordId().equals(recordId)) {
+                    tuples[i] = null;
+                    markSlotUsed(i, false);
+                    return;
+                }
+            }
+        }
+        throw new DbException("pid not equal");
 
     }
 
@@ -260,7 +278,21 @@ public class HeapPage implements Page {
      */
     public void insertTuple(Tuple t) throws DbException {
         // some code goes here
-        // not necessary for lab1
+        if (t == null)
+            throw new DbException("Tuple is null");
+        if (getNumEmptySlots() == 0)
+            throw new DbException("No empty slots on page");
+        if (!td.equals(t.getTupleDesc()))
+            throw new DbException("Tuples not in the same schema");
+
+        for (int i = 0; i < tuples.length; i++) {
+            if (!isSlotUsed(i)){
+                t.setRecordId(new RecordId(pid, i));
+                tuples[i] = t;
+                markSlotUsed(i,true);
+                return;
+            }
+        }
     }
 
     /**
