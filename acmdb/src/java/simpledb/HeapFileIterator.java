@@ -55,7 +55,7 @@ public class HeapFileIterator implements DbFileIterator {
 
         if (page_id + 1 >= max_pages) {
             // TODO: Problem!! large data replacement but iterator has no next!
-            System.err.println("full page " + page_id + " " + max_pages);
+//            System.err.println("full page " + page_id + " " + max_pages);
 //            throw new DbException("Page exceed max-page-size");
             return false;
         }

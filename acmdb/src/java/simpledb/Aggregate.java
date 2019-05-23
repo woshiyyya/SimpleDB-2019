@@ -45,11 +45,11 @@ public class Aggregate extends Operator {
         TupleDesc input_tupleDesc = child.getTupleDesc();
         Type groupby_fieldType = null;
         Type aggregate_fieldType = input_tupleDesc.getFieldType(afield);
-        String aggregated_fieldname = aop.toString() + "(" + aggregate_fieldType.name() + ")";
+        String aggregated_fieldname = aop.toString() + "(" + input_tupleDesc.getFieldName(afield) + ")";
 
         if (gfield != Aggregator.NO_GROUPING){
             groupby_fieldType = child.getTupleDesc().getFieldType(gfield);
-            String groupby_fieldname = groupby_fieldType.name();
+            String groupby_fieldname = child.getTupleDesc().getFieldName(gfield);
 
             Type[] types = new Type[] {groupby_fieldType, aggregate_fieldType};
             String[] names = new String[] {groupby_fieldname, aggregated_fieldname};

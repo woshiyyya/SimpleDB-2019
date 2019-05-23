@@ -13,10 +13,10 @@ public class test {
 
         // create the tables, associate them with the data files
         // and tell the catalog about the schema  the tables.
-        HeapFile table1 = new HeapFile(new File("some_data_file1.dat"), td);
+        HeapFile table1 = new HeapFile(new File("test_data/some_data_file1.dat"), td);
         Database.getCatalog().addTable(table1, "t1");
 
-        HeapFile table2 = new HeapFile(new File("some_data_file2.dat"), td);
+        HeapFile table2 = new HeapFile(new File("test_data/some_data_file2.dat"), td);
         Database.getCatalog().addTable(table2, "t2");
 
         // construct the query: we use two SeqScans, which spoonfeed
