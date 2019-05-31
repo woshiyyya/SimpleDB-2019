@@ -103,7 +103,6 @@ public class QueryPlanVisualizer {
             }
             thisNode = parentNode;
         } else {
-
             Operator plan = (Operator) queryPlan;
             DbIterator[] children = plan.getChildren();
 

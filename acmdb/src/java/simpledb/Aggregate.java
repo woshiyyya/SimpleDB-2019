@@ -179,13 +179,13 @@ public class Aggregate extends Operator {
     @Override
     public DbIterator[] getChildren() {
         // some code goes here
-        return new DbIterator[] {iterator};
+        return new DbIterator[] {child};
     }
 
     @Override
     public void setChildren(DbIterator[] children) {
         // some code goes here
-        iterator = children[0];
+        child = children[0];
     }
 
 }
