@@ -343,9 +343,8 @@ public class LogicalPlan {
 
             //s.addSelectivityFactor(estimateFilterSelectivity(lf,statsMap));
         }
-        
-        JoinOptimizer jo = new JoinOptimizer(this,joins);
 
+        JoinOptimizer jo = new JoinOptimizer(this,joins);
         joins = jo.orderJoins(statsMap,filterSelectivities,explain);
 
         Iterator<LogicalJoinNode> joinIt = joins.iterator();

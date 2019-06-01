@@ -103,6 +103,8 @@ public class IntHistogram {
                 if (v <= min) return 1.0;
                 if (v > max) return 0.0;
                 return calculateSelectivity(Op.EQUALS, v) + calculateSelectivity(Op.GREATER_THAN, v);
+            case LIKE:
+                return 1.0;
         }
         return 0;
     }

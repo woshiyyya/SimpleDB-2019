@@ -212,20 +212,22 @@ public class JoinOptimizer {
         PlanCache planCache = new PlanCache();
         Set<LogicalJoinNode> fullJoins = null;
 
+        System.out.println(joins.size());
+
         for (int i = 1; i <= joins.size(); i++) {
             Set<Set<LogicalJoinNode>> subsets = enumerateSubsets(joins, i);
 
             for(Set<LogicalJoinNode> subset: subsets){
                 if (i == joins.size())
                     fullJoins = subset;
-
+                System.out.println(i);
                 double curBestPlanCost = Double.MAX_VALUE;
                 CostCard curBestCostCard = null;
 
                 for (LogicalJoinNode subplan: subset){
                     CostCard costCard = computeCostAndCardOfSubplan(stats, filterSelectivities, subplan, subset, curBestPlanCost, planCache);
 
-                    if (costCard != null && costCard.cost < curBestPlanCost){
+                    if (costCard != null && costCard.cost <= curBestPlanCost){
                         curBestPlanCost = costCard.cost;
                         curBestCostCard = costCard;
                     }
@@ -238,12 +240,15 @@ public class JoinOptimizer {
 
         Vector<LogicalJoinNode> bestPlan = planCache.getOrder(fullJoins);
 
+        if (bestPlan == null) return new Vector<>();
+
         if(explain){
             printJoins(bestPlan, planCache, stats, filterSelectivities);
         }
-
+        System.out.println("Optimization Complete!");
         return bestPlan;
     }
+
 
     // ===================== Private Methods =================================
 
