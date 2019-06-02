@@ -12,6 +12,7 @@ public class Join extends Operator {
     private DbIterator child1;
     private DbIterator child2;
     private Tuple left_tuple;
+    private HashEquiJoin hashEquiJoin = null;
 
     /**
      * Constructor. Accepts to children to join and the predicate to join them
@@ -24,6 +25,9 @@ public class Join extends Operator {
     public Join(JoinPredicate p, DbIterator child1, DbIterator child2) {
         // some code goes here
         this.joinPredicate = p;
+        if (p.getOperator().equals(Predicate.Op.EQUALS)){
+            hashEquiJoin = new HashEquiJoin(p, child1, child2);
+        }
         this.child1 = child1;
         this.child2 = child2;
     }
@@ -63,9 +67,13 @@ public class Join extends Operator {
     public void open() throws DbException, NoSuchElementException,
             TransactionAbortedException {
         // some code goes here
+        super.open();
+        if (hashEquiJoin != null){
+            hashEquiJoin.open();
+            return;
+        }
         child1.open();
         child2.open();
-        super.open();
         if (child1.hasNext()) {
             left_tuple = child1.next();
         }
@@ -73,13 +81,21 @@ public class Join extends Operator {
 
     public void close() {
         // some code goes here
+        super.close();
+        if(hashEquiJoin != null){
+            hashEquiJoin.close();
+            return;
+        }
         child1.close();
         child2.close();
-        super.close();
     }
 
     public void rewind() throws DbException, TransactionAbortedException {
         // some code goes here
+        if(hashEquiJoin != null){
+            hashEquiJoin.rewind();
+            return;
+        }
         child1.rewind();
         child2.rewind();
         if (child1.hasNext()) {
@@ -107,6 +123,8 @@ public class Join extends Operator {
      */
     protected Tuple fetchNext() throws TransactionAbortedException, DbException {
         // some code goes here
+        if (hashEquiJoin != null)
+            return hashEquiJoin.fetchNext();
 
         TupleDesc concatTupleDesc = getTupleDesc();
         while (left_tuple != null) {

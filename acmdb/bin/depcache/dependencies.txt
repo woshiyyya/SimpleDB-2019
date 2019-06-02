@@ -95,7 +95,10 @@ simpledb.IntField
 ||:simpledb.Join
 simpledb.Tuple
 simpledb.DbIterator
+simpledb.Predicate$Op
+simpledb.Predicate
 simpledb.Operator
+simpledb.HashEquiJoin
 simpledb.DbException
 java.util.NoSuchElementException
 simpledb.TupleDesc
