@@ -33,13 +33,16 @@ public class HeapFileIterator implements DbFileIterator {
 //            isEmpty = (page.numSlots == page.getNumEmptySlots());
 //            page_id = new HeapPageId(page_id.getTableId(), page_id.pageNumber() + 1);
 //        }while(isEmpty && page_id.pageNumber() < max_pages);
-        HeapPage page = (HeapPage) buffer_pool.getPage(tid, page_id, Permissions.READ_WRITE);
+        HeapPage page = (HeapPage) buffer_pool.getPage(tid, page_id, Permissions.READ_ONLY);
 
         return page.iterator();
     }
 
     @Override
     public void open() throws DbException, TransactionAbortedException {
+        if (this.cur_tuple_iter != null){
+            throw new DbException("already opened");
+        }
         this.cur_tuple_iter = GetTupleIterator(new HeapPageId(table_id, page_id));
     }
 

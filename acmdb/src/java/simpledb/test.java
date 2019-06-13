@@ -1,12 +1,23 @@
 package simpledb;
 
 import java.io.*;
+import java.util.Iterator;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class test {
     public static void main(String[] argv) {
-        int a = 5;
-        int b = 2;
-        System.out.println(a / b);
+        ConcurrentHashMap<Integer, Integer> map = new ConcurrentHashMap<>();
+        map.put(1,1);
+        map.put(2,1);
+        map.put(3,1);
+        map.put(4,1);
+        System.out.println(map);
+        map.put(1,8);
+        System.out.println(map);
+        map.replace(2,8);
+        System.out.println(map);
     }
 
     public static void main0(String[] argv) {

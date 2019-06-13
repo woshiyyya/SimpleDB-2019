@@ -107,8 +107,9 @@ public class HeapFile implements DbFile {
         int i = 0;
         while (i < numPages()){
             PageId pageId = new HeapPageId(getId(), i);
-            HeapPage page = (HeapPage) Database.getBufferPool().getPage(tid, pageId, Permissions.READ_WRITE);
+            HeapPage page = (HeapPage) Database.getBufferPool().getPage(tid, pageId, Permissions.READ_ONLY);
             if (page.getNumEmptySlots() > 0){
+                page = (HeapPage) Database.getBufferPool().getPage(tid, pageId, Permissions.READ_WRITE);
                 try{
                     page.insertTuple(t);
                     dirtyPages.add(page);
@@ -116,15 +117,28 @@ public class HeapFile implements DbFile {
                 }catch (Exception e){
                     throw new DbException("Insertion Error");
                 }
+            } else{
+                Database.getBufferPool().releasePage(tid, pageId);
             }
             i++;
         }
 
+
         HeapPageId heapPageId = new HeapPageId(getId(), numPages());
         HeapPage newpage = new HeapPage(heapPageId, HeapPage.createEmptyPageData());
-        newpage.insertTuple(t);
+        // TODO: This write might be illegal, cannot directly write page !!!
+//      newpage.insertTuple(t);
+//      this.writePage(newpage);
+//      dirtyPages.add(newpage);
+
+        //----new-----
+
         this.writePage(newpage);
-        dirtyPages.add(newpage);
+        HeapPage heapPage = (HeapPage) Database.getBufferPool().getPage(tid, heapPageId, Permissions.READ_WRITE);
+        heapPage.insertTuple(t);
+        dirtyPages.add(heapPage);
+        //----end-----
+
         return dirtyPages;
     }
 

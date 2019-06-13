@@ -67,7 +67,7 @@ public class HashEquiJoin extends Operator {
             }
             hashMap.get(field).add(tuple);
         }
-        child1.open();
+//        child1.open();
         super.open();
     }
 

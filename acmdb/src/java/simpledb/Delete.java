@@ -67,7 +67,7 @@ public class Delete extends Operator {
                 Tuple tuple = child.next();
                 try {
                     Database.getBufferPool().deleteTuple(tid, tuple);
-                } catch (Exception e) {
+                } catch (IOException e) {
                     throw new DbException("IO Exception while deleting");
                 }
 

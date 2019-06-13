@@ -220,7 +220,6 @@ public class JoinOptimizer {
             for(Set<LogicalJoinNode> subset: subsets){
                 if (i == joins.size())
                     fullJoins = subset;
-                System.out.println(i);
                 double curBestPlanCost = Double.MAX_VALUE;
                 CostCard curBestCostCard = null;
 
