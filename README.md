@@ -7,3 +7,5 @@ Report for lab2: [./reports/report_lab2.pdf](./reports/report_lab2.pdf), Checkpo
 Report for lab3: [./reports/report_lab3.pdf](./reports/report_lab3.pdf), Checkpoint: [Lab3](https://github.com/woshiyyya/SimpleDB-2019/tree/lab3)
 
 Report for lab4: [./reports/report_lab4.pdf](./reports/report_lab4.pdf), Checkpoint: [Lab4](https://github.com/woshiyyya/SimpleDB-2019/tree/lab4)
+
+Report for lab4: [./reports/report_lab5.pdf](./reports/report_lab4.pdf), Checkpoint: [Lab4](https://github.com/woshiyyya/SimpleDB-2019/tree/lab5)

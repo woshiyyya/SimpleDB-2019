@@ -214,7 +214,7 @@ public class BTreeTest extends SimpleDbTestBase {
 			count++;
 		}
 		it.close();
-		System.err.println("count = " + count + "tplst.size() = " + tuplesList.size());
+		System.err.println("count = " + count + " tplst.size() = " + tuplesList.size());
 		assertEquals(count, tuplesList.size());
 		Database.getBufferPool().transactionComplete(tid);
 

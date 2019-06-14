@@ -7,9 +7,10 @@ import java.util.concurrent.*;
 
 public class LockManager {
     private final ConcurrentHashMap<PageId, Object> locks;
-    private final ConcurrentHashMap<PageId, ConcurrentLinkedDeque<TransactionId>> sharedLocks;
     private final ConcurrentHashMap<PageId, TransactionId> exclusiveLocks;
+    private final ConcurrentHashMap<PageId, ConcurrentLinkedDeque<TransactionId>> sharedLocks;
     private final ConcurrentHashMap<TransactionId, ConcurrentLinkedDeque<PageId>> transactionHoldLocks;
+    // transaction holds XLock == this page is dirtied by the transaction
     private final ConcurrentHashMap<TransactionId, ConcurrentLinkedDeque<PageId>> transactionHoldXLocks;
     private final ConcurrentHashMap<TransactionId, ConcurrentLinkedDeque<TransactionId>> dependencyGraph;
 
@@ -67,7 +68,6 @@ public class LockManager {
                 ArrayList<TransactionId> holders = new ArrayList<>();
                 holders.add(holder);
                 updateDependency(tid, holders);
-
             }
         }
     }
@@ -112,11 +112,8 @@ public class LockManager {
     private void removeDependency(TransactionId tid) {
         synchronized (dependencyGraph) {
             dependencyGraph.remove(tid);
-            // TODO: clear in all value set?
             for (TransactionId curtid : dependencyGraph.keySet()) {
-                if (dependencyGraph.get(curtid).contains(tid)) {
-                    dependencyGraph.get(curtid).remove(tid);
-                }
+                dependencyGraph.get(curtid).remove(tid);
             }
         }
     }
@@ -132,7 +129,6 @@ public class LockManager {
                 dependencyGraph.get(acquirer).add(holder);
             }
         }
-
         if (hasChange) {
             checkDeadLock(acquirer, new HashSet<>());
         }
@@ -140,11 +136,11 @@ public class LockManager {
 
 
     private void checkDeadLock(TransactionId root, HashSet<TransactionId> visit) throws TransactionAbortedException {
+        // DFS Checking self-loop
         if (!dependencyGraph.containsKey(root))
             return;
         for (TransactionId child : dependencyGraph.get(root)) {
             if (visit.contains(child)) {
-//                System.out.println(dependencyGraph);
                 throw new TransactionAbortedException();
             }
             visit.add(child);
@@ -177,7 +173,6 @@ public class LockManager {
                 if (transactionHoldXLocks.containsKey(tid)) {
                     transactionHoldXLocks.get(tid).remove(pid);
                 }
-
             }
         }
     }
@@ -195,7 +190,7 @@ public class LockManager {
         return hasLock(tid, pid, true) || hasLock(tid, pid, false);
     }
 
-    public ConcurrentHashMap getTransactionDirtiedPages() {
+    public ConcurrentHashMap<TransactionId, ConcurrentLinkedDeque<PageId>> getTransactionDirtiedPages() {
         return transactionHoldXLocks;
     }
 }
